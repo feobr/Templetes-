@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard ReclameAQUI | Microsoft</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#f3f2f1;
+    padding:20px;
+    color:#323130;
+}
+
+.container{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    max-width:1400px;
+    margin:auto;
+}
+
+.card{
+    background:#fff;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+h2{
+    color:#0078d4;
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-top:12px;
+    font-weight:600;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    border:1px solid #d1d1d1;
+    border-radius:6px;
+    font-size:14px;
+}
+
+textarea{
+    min-height:110px;
+    resize:vertical;
+}
+
+.tabs{
+    display:flex;
+    gap:5px;
+    margin-bottom:15px;
+}
+
+.tab{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    background:#eaeaea;
+    font-weight:600;
+}
+
+.tab.active{
+    background:#0078d4;
+    color:white;
+}
+
+.preview{
+    border:1px solid #ddd;
+    border-radius:6px;
+    background:#fafafa;
+    padding:15px;
+    height:500px;
+    overflow:auto;
+    white-space:pre-wrap;
+}
+
+.btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:600;
+    margin-top:10px;
+}
+
+.btn-primary{
+    background:#0078d4;
+    color:white;
+}
+
+.btn-success{
+    background:#107c10;
+    color:white;
+}
+
+.btn-danger{
+    background:#d13438;
+    color:white;
+}
+
+.template-card{
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:12px;
+    margin-bottom:10px;
+    background:white;
+}
+
+.template-card button{
+    margin-top:8px;
+    margin-right:5px;
+    padding:8px 12px;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+}
+
+#templateArea{
+    display:none;
+    height:500px;
+    overflow:auto;
+}
+
+@media(max-width:900px){
+    .container{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>Atendimento Microsoft</h2>
+
+        <!-- Eventos oninput adicionados para atualizar o preview em tempo real -->
+        <label>Atendente</label>
+        <input id="atendente" oninput="gerarResposta()">
+
+        <label>Cliente</label>
+        <input id="cliente" oninput="gerarResposta()">
+
+        <label>Problema</label>
+        <textarea id="problema" oninput="gerarResposta()"></textarea>
+
+        <label>Observação Interna</label>
+        <textarea id="observacao" oninput="gerarResposta()"></textarea>
+
+        <label>Orientação</label>
+        <textarea id="orientacao" oninput="gerarResposta()"></textarea>
+
+    </div>
+
+    <div class="card">
+
+        <div class="tabs">
+            <button class="tab active" id="tabPrivada" onclick="mudarAba('privada')">
+                Privada
+            </button>
+
+            <button class="tab" id="tabPublica" onclick="mudarAba('publica')">
+                Pública
+            </button>
+
+            <button class="tab" id="tabTemplates" onclick="mudarAba('templates')">
+                Templates
+            </button>
+        </div>
+
+        <div id="preview" class="preview"></div>
+
+        <div id="templateArea">
+
+            <button class="btn btn-success" onclick="novoTemplate()">
+                Novo Template
+            </button>
+
+            <br><br>
+
+            <input
+                    placeholder="Pesquisar template..."
+                    onkeyup="buscarTemplate(this.value)">
+
+            <br><br>
+
+            <div id="listaTemplates"></div>
+
+        </div>
+
+        <button class="btn btn-primary" onclick="copiarResposta()">
+            Copiar Resposta
+        </button>
+
+        <button class="btn btn-danger" onclick="limparCampos()">
+            Limpar Campos
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+let abaAtual = "privada";
+
+let templates = JSON.parse(
+    localStorage.getItem("templatesMicrosoft")
+) || [
+
+    {
+        id:1,
+        categoria:"Conta Microsoft",
+        titulo:"Conta Bloqueada",
+        problema:"Conta Microsoft bloqueada",
+        orientacao:"Realizar recuperação através do formulário oficial Microsoft."
+    },
+
+    {
+        id:2,
+        categoria:"Xbox",
+        titulo:"Game Pass",
+        problema:"Problema com assinatura Game Pass",
+        orientacao:"Validar pagamento, assinatura ativa e conta utilizada."
+    },
+
+    {
+        id:3,
+        categoria:"Windows",
+        titulo:"Ativação",
+        problema:"Erro de ativação do Windows",
+        orientacao:"Executar solucionador de ativação e validar licença."
+    }
+
+];
+
+function salvarTemplates(){
+    localStorage.setItem(
+        "templatesMicrosoft",
+        JSON.stringify(templates)
+    );
+}
+
+// FUNÇÃO ATUALIZADA: Puxa o nome do atendente dinamicamente para a assinatura personalizada
+function assinatura(){
+const atendente = document.getElementById("atendente").value.trim() || "[Atendente]";
+
+return `
+Atenciosamente,
+${atendente}
+
+Equipe Microsoft
+0800 761 7454
+https://support.microsoft.com
+`;
+
+}
+
+function gerarResposta(){
+
+const cliente =
+document.getElementById("cliente").value || "[Cliente]";
+
+const atendente =
+document.getElementById("atendente").value || "[Atendente]";
+
+const problema =
+document.getElementById("problema").value || "[Problema]";
+
+const observacao =
+document.getElementById("observacao").value;
+
+const orientacao =
+document.getElementById("orientacao").value || "[Orientação]";
+
+let texto = "";
+
+if(abaAtual === "privada"){
+
+texto = `Olá ${cliente},
+
+Obrigado por contatar a Microsoft.
+
+Meu nome é ${atendente}.
+
+Problema informado:
+${problema}
+
+${observacao ? "Observação Interna:\n" + observacao + "\n" : ""}
+
+Orientação:
+${orientacao}
+
+${assinatura()}`;
+
+}else{
+
+texto = `Olá ${cliente},
+
+Obrigado pelo contato.
+
+Em atenção à sua manifestação:
+
+${problema}
+
+Esclarecemos que:
+
+${orientacao}
+
+${assinatura()}`;
+
+}
+
+document.getElementById("preview").innerText = texto;
+
+}
+
+function mudarAba(aba){
+
+abaAtual = aba;
+
+document.querySelectorAll(".tab")
+.forEach(btn => btn.classList.remove("active"));
+
+document.getElementById("preview").style.display = "block";
+document.getElementById("templateArea").style.display = "none";
+
+if(aba === "privada"){
+    document.getElementById("tabPrivada").classList.add("active");
+    gerarResposta();
+    return;
+}
+
+if(aba === "publica"){
+    document.getElementById("tabPublica").classList.add("active");
+    gerarResposta();
+    return;
+}
+
+document.getElementById("tabTemplates").classList.add("active");
+
+document.getElementById("preview").style.display = "none";
+document.getElementById("templateArea").style.display = "block";
+carregarTemplates(); // Garante que a lista carregue ao abrir a aba
+
+}
+
+function carregarTemplates(lista = templates){
+
+let html = "";
+
+lista.forEach(template=>{
+
+html += `
+<div class="template-card">
+
+<strong>${template.categoria}</strong><br>
+${template.titulo}
+
+<br><br>
+
+<button onclick="usarTemplate(${template.id})">
+Usar
+</button>
+
+<button onclick="editarTemplate(${template.id})">
+Editar
+</button>
+
+<button
+style="background:#d13438;color:white;"
+onclick="excluirTemplate(${template.id})">
+Excluir
+</button>
+
+</div>
+`;
+
+});
+
+document.getElementById("listaTemplates").innerHTML = html;
+
+}
+
+function usarTemplate(id){
+
+const t = templates.find(x => x.id === id);
+
+if(!t) return;
+
+document.getElementById("problema").value = t.problema;
+document.getElementById("orientacao").value = t.orientacao;
+
+mudarAba("privada");
+gerarResposta();
+
+}
+
+function novoTemplate(){
+
+const categoria = prompt("Categoria:");
+if(!categoria) return;
+
+const titulo = prompt("Título:");
+if(!titulo) return;
+
+const problema = prompt("Problema:");
+if(!problema) return;
+
+const orientacao = prompt("Orientação:");
+if(!orientacao) return;
+
+templates.push({
+    id:Date.now(),
+    categoria,
+    titulo,
+    problema,
+    orientacao
+});
+
+salvarTemplates();
+carregarTemplates();
+
+}
+
+// FUNÇÕES RESTAURADAS: Trecho final corrigido e fechamento do script adicionado corretamente
+function editarTemplate(id){
+
+let t = templates.find(x => x.id === id);
+
+if(!t) return;
+
+const categoria = prompt("Categoria", t.categoria);
+if(categoria === null) return;
+
+const titulo = prompt("Título", t.titulo);
+if(titulo === null) return;
+
+const problema = prompt("Problema", t.problema);
+if(problema === null) return;
+
+const orientacao = prompt("Orientação", t.orientacao);
+if(orientacao === null) return;
+
+t.categoria = categoria;
+t.titulo = titulo;
+t.problema = problema;
+t.orientacao = orientacao;
+
+salvarTemplates();
+carregarTemplates();
+}
+
+function excluirTemplate(id){
+    if(confirm("Tem certeza que deseja excluir este template?")){
+        templates = templates.filter(x => x.id !== id);
+        salvarTemplates();
+        carregarTemplates();
+    }
+}
+
+function buscarTemplate(valor){
+    const filtrados = templates.filter(t => 
+        t.titulo.toLowerCase().includes(valor.toLowerCase()) || 
+        t.categoria.toLowerCase().includes(valor.toLowerCase())
+    );
+    carregarTemplates(filtrados);
+}
+
+function copiarResposta(){
+    const texto = document.getElementById("preview").innerText;
+    navigator.clipboard.writeText(texto).then(() => {
+        alert("Resposta copiada com sucesso!");
+    }).catch(err => {
+        alert("Erro ao copiar: ", err);
+    });
+}
+
+function limparCampos() {
+    document.getElementById("atendente").value = "";
+    document.getElementById("cliente").value = "";
+    document.getElementById("problema").value = "";
+    document.getElementById("observacao").value = "";
+    document.getElementById("orientacao").value = "";
+    gerarResposta();
+}
+
+// Inicializa o primeiro preview vazio estruturado na inicialização da página
+gerarResposta();
+
+</script>
+</body>
+</html>
