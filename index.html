@@ -59,6 +59,23 @@ textarea{
     resize:vertical;
 }
 
+/* Campos exclusivos da aba Retorno */
+.retorno-exclusivo-fields {
+    background: #fffdf4;
+    border: 1px dashed #f2c811;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+.retorno-exclusivo-title {
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #8a6d00;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
 .tabs{
     display:flex;
     gap:5px;
@@ -67,12 +84,14 @@ textarea{
 
 .tab{
     flex:1;
-    padding:12px;
+    padding:12px 6px;
     border:none;
     border-radius:6px;
     cursor:pointer;
     background:#eaeaea;
     font-weight:600;
+    font-size: 13px;
+    text-align: center;
 }
 
 .tab.active{
@@ -85,7 +104,7 @@ textarea{
     border-radius:6px;
     background:#fafafa;
     padding:15px;
-    height:500px;
+    height:550px;
     overflow:auto;
     white-space:pre-wrap;
 }
@@ -123,6 +142,17 @@ textarea{
     background:#fff;
 }
 
+.badge {
+    display: inline-block;
+    padding: 3px 6px;
+    font-size: 11px;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.badge-geral { background: #e1f5fe; color: #0288d1; }
+.badge-retorno { background: #fff3e0; color: #f57c00; }
+
 .template-card button{
     margin-top:8px;
     padding:8px 14px;
@@ -135,7 +165,7 @@ textarea{
 
 #templateArea{
     display:none;
-    height:500px;
+    height:550px;
     overflow:auto;
 }
 
@@ -151,122 +181,119 @@ textarea{
 
 <div class="container">
 
-<div class="card">
+    <div class="card">
+        <h2>Atendimento Microsoft</h2>
 
-<h2>Atendimento Microsoft</h2>
+        <label>Atendente</label>
+        <input id="atendente" oninput="gerarResposta()">
 
-<label>Atendente</label>
-<input id="atendente" oninput="gerarResposta()">
+        <label>Cliente</label>
+        <input id="cliente" oninput="gerarResposta()">
 
-<label>Cliente</label>
-<input id="cliente" oninput="gerarResposta()">
+        <!-- Campos Padrões para abas Privada/Pública -->
+        <div id="camposPadraoSecao">
+            <label>Problema Informado (Privada/Pública)</label>
+            <textarea id="problema" oninput="gerarResposta()"></textarea>
 
-<label>Problema</label>
-<textarea id="problema" oninput="gerarResposta()"></textarea>
+            <label>Observação Interna (Privada)</label>
+            <textarea id="observacao" oninput="gerarResposta()"></textarea>
 
-<label>Observação Interna</label>
-<textarea id="observacao" oninput="gerarResposta()"></textarea>
+            <label>Orientação Passada (Privada/Pública)</label>
+            <textarea id="orientacao" oninput="gerarResposta()"></textarea>
+        </div>
 
-<label>Orientação</label>
-<textarea id="orientacao" oninput="gerarResposta()"></textarea>
+        <!-- Campos Exclusivos para a Aba Resposta Retorno -->
+        <div id="camposRetornoSecao" class="retorno-exclusivo-fields" style="display: none;">
+            <div class="retorno-exclusivo-title">Exclusivo: Resposta Retorno</div>
+            
+            <label>Dificuldade/Erro relatado pelo cliente no retorno</label>
+            <textarea id="retornoProblema" oninput="gerarResposta()" placeholder="Ex: Cliente informa que o código de erro persiste ao carregar a página..."></textarea>
 
-</div>
+            <label>Nova Instrução ou Solução direcionada</label>
+            <textarea id="retornoInstrucao" oninput="gerarResposta()" placeholder="Ex: Solicitei a execução em Modo Privado e envio do print completo..."></textarea>
+        </div>
+    </div>
 
-<div class="card">
+    <div class="card">
+        <div class="tabs">
+            <button class="tab active" id="tabPrivada" onclick="mudarAba('privada')">Privada</button>
+            <button class="tab" id="tabRespostaRetorno" onclick="mudarAba('resposta_retorno')">Resposta Retorno</button>
+            <button class="tab" id="tabPublica" onclick="mudarAba('publica')">Pública</button>
+            <button class="tab" id="tabTemplates" onclick="mudarAba('templates')">Templates</button>
+        </div>
 
-<div class="tabs">
-<button class="tab active" id="tabPrivada" onclick="mudarAba('privada')">
-Privada
-</button>
+        <div id="preview" class="preview"></div>
 
-<button class="tab" id="tabPublica" onclick="mudarAba('publica')">
-Pública
-</button>
+        <div id="templateArea">
+            <input id="buscaInput" placeholder="Pesquisar template..." onkeyup="buscarTemplate(this.value)">
+            <br><br>
+            <div id="listaTemplates"></div>
+        </div>
 
-<button class="tab" id="tabTemplates" onclick="mudarAba('templates')">
-Templates
-</button>
-</div>
-
-<div id="preview" class="preview"></div>
-
-<div id="templateArea">
-
-<input
-placeholder="Pesquisar template..."
-onkeyup="buscarTemplate(this.value)">
-
-<br><br>
-
-<div id="listaTemplates"></div>
-
-</div>
-
-<button class="btn btn-primary" onclick="copiarResposta()">
-Copiar Resposta
-</button>
-
-<button class="btn btn-purple" onclick="copiarSemAssinatura()">
-Copiar Sem Assinatura
-</button>
-
-<button class="btn btn-danger" onclick="limparCampos()">
-Limpar Campos
-</button>
-
-</div>
+        <button class="btn btn-primary" onclick="copiarResposta()">Copiar Resposta</button>
+        <button class="btn btn-purple" onclick="copiarSemAssinatura()">Copiar Sem Assinatura</button>
+        <button class="btn btn-danger" onclick="limparCampos()">Limpar Campos</button>
+    </div>
 
 </div>
 
 <script>
-
 let abaAtual = "privada";
 
 const templates = [
-
-{
-id:1,
-categoria:"Conta Microsoft",
-titulo:"Conta Bloqueada",
-problema:"Conta Microsoft bloqueada",
-orientacao:"Realizar recuperação através do formulário oficial Microsoft."
-},
-
-{
-id:2,
-categoria:"Xbox",
-titulo:"Game Pass",
-problema:"Problema com assinatura Game Pass",
-orientacao:"Validar pagamento, assinatura ativa e conta utilizada."
-},
-
-{
-id:3,
-categoria:"Windows",
-titulo:"Ativação",
-problema:"Erro de ativação do Windows",
-orientacao:"Executar solucionador de ativação e validar licença."
-},
-
-{
-id:4,
-categoria:"Conta Microsoft",
-titulo:"Conta hackeada",
-problema:"Conta hackeada",
-orientacao:"acessar aka.ms/reupera."
-}
-
+    {
+        id: 1,
+        tipo: "geral",
+        categoria: "Conta Microsoft",
+        titulo: "Conta Bloqueada",
+        problema: "Conta Microsoft bloqueada por atividade suspeita.",
+        orientacao: "Realizar a recuperação de segurança através do formulário oficial de validação Microsoft."
+    },
+    {
+        id: 2,
+        tipo: "geral",
+        categoria: "Xbox",
+        titulo: "Game Pass",
+        problema: "Problema com processamento da assinatura Game Pass",
+        orientacao: "Validar os métodos de pagamento vinculados, conferir o status da assinatura ativa e garantir login com a conta correta."
+    },
+    {
+        id: 3,
+        tipo: "geral",
+        categoria: "Windows",
+        titulo: "Ativação",
+        problema: "Erro genérico de validação e ativação do Windows",
+        orientacao: "Executar o solucionador de problemas de ativação nativo e conferir a chave de licença digital."
+    },
+    {
+        id: 4,
+        tipo: "retorno",
+        categoria: "Retorno",
+        titulo: "Erro persiste após procedimentos",
+        problema: "O erro original continua mesmo executando as orientações anteriores.",
+        orientacao: "Coletar evidências adicionais e escalar para suporte nível 2 para verificação de conta."
+    },
+    {
+        id: 5,
+        tipo: "retorno",
+        categoria: "Retorno",
+        titulo: "Pedido de Prints / Logs",
+        problema: "Cliente retornou sem as mídias ou informações completas do erro.",
+        orientacao: "Solicitar o envio legível de capturas de tela e do código de erro gerado para análise técnica."
+    },
+    {
+        id: 6,
+        tipo: "retorno",
+        categoria: "Retorno",
+        titulo: "Dificuldade Técnica na Execução",
+        problema: "Cliente relata dificuldade para realizar as etapas propostas de forma autônoma.",
+        orientacao: "Apresentar um passo a passo mais simplificado ou sugerir contato via central telefônica assistida."
+    }
 ];
 
 function assinatura(){
-
-const atendente =
-document.getElementById("atendente").value.trim()
-|| "[Atendente]";
-
-return `
-
-Atenciosamente,
+    const atendente = document.getElementById("atendente").value.trim() || "[Atendente]";
+    return `Atenciosamente,
 
 ${atendente}
 Equipe ReclameAQUI/Microsoft
@@ -290,209 +317,202 @@ Microsoftbr
 
 X:
 @MicrosoftAjuda`;
-
 }
 
 function gerarResposta(){
+    const cliente = document.getElementById("cliente").value.trim() || "[Cliente]";
+    const atendente = document.getElementById("atendente").value.trim() || "[Atendente]";
+    
+    // Valores padrões
+    const problema = document.getElementById("problema").value.trim() || "[Problema]";
+    const observacao = document.getElementById("observacao").value.trim();
+    const orientacao = document.getElementById("orientacao").value.trim() || "[Orientação]";
+    
+    // Valores exclusivos de retorno
+    const retornoProblema = document.getElementById("retornoProblema").value.trim() || "[Relato do Cliente no Retorno]";
+    const retornoInstrucao = document.getElementById("retornoInstrucao").value.trim() || "[Nova Instrução Direcionada]";
 
-const cliente =
-document.getElementById("cliente").value || "[Cliente]";
+    let texto = "";
 
-const atendente =
-document.getElementById("atendente").value || "[Atendente]";
-
-const problema =
-document.getElementById("problema").value || "[Problema]";
-
-const observacao =
-document.getElementById("observacao").value;
-
-const orientacao =
-document.getElementById("orientacao").value || "[Orientação]";
-
-let texto = "";
-
-if(abaAtual === "privada"){
-
-texto = `Olá ${cliente},
+    if (abaAtual === "privada") {
+        texto = `Olá ${cliente},
 
 Obrigado por contatar a Microsoft.
 
 Meu nome é ${atendente}.
 
 Problema informado:
-
 ${problema}
 
 ${observacao ? `Observação Interna:
-
 ${observacao}
 
 ` : ""}Orientação:
-
 ${orientacao}
 
 ${assinatura()}`;
 
-}
-else{
-
-texto = `Olá ${cliente},
+    } else if (abaAtual === "publica") {
+        texto = `Olá ${cliente},
 
 Obrigado pelo contato.
 
 Em atenção à sua manifestação:
-
 ${problema}
 
 Esclarecemos que:
-
 ${orientacao}
 
 ${assinatura()}`;
 
-}
+    } else if (abaAtual === "resposta_retorno") {
+        texto = `Olá ${cliente},
 
-document.getElementById("preview").innerText = texto;
+Obrigado pelo retorno.
 
+Analisamos suas novas considerações sobre o caso:
+${retornoProblema}
+
+Para darmos continuidade e resolvermos seu impasse, siga esta nova orientação atualizada:
+${retornoInstrucao}
+
+Permanecemos à inteira disposição.
+
+${assinatura()}`;
+    }
+
+    document.getElementById("preview").innerText = texto;
 }
 
 function mudarAba(aba){
+    abaAtual = aba;
 
-abaAtual = aba;
+    // Remove active de todas as abas
+    document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
 
-document.querySelectorAll(".tab")
-.forEach(btn => btn.classList.remove("active"));
+    // Esconde visualizadores padrão
+    document.getElementById("preview").style.display = "block";
+    document.getElementById("templateArea").style.display = "none";
 
-document.getElementById("preview").style.display = "block";
-document.getElementById("templateArea").style.display = "none";
-
-if(aba==="privada"){
-document.getElementById("tabPrivada").classList.add("active");
-gerarResposta();
-return;
-}
-
-if(aba==="publica"){
-document.getElementById("tabPublica").classList.add("active");
-gerarResposta();
-return;
-}
-
-document.getElementById("tabTemplates").classList.add("active");
-
-document.getElementById("preview").style.display = "none";
-document.getElementById("templateArea").style.display = "block";
-
-carregarTemplates();
-
+    // Lógica de visibilidade dos inputs (Formulário da Esquerda)
+    if (aba === "resposta_retorno") {
+        document.getElementById("camposPadraoSecao").style.display = "none";
+        document.getElementById("camposRetornoSecao").style.display = "block";
+        document.getElementById("tabRespostaRetorno").classList.add("active");
+        gerarResposta();
+    } else if (aba === "templates") {
+        document.getElementById("tabTemplates").classList.add("active");
+        document.getElementById("preview").style.display = "none";
+        document.getElementById("templateArea").style.display = "block";
+        carregarTemplates();
+    } else {
+        // Privada ou Pública usam os mesmos campos padrões
+        document.getElementById("camposPadraoSecao").style.display = "block";
+        document.getElementById("camposRetornoSecao").style.display = "none";
+        
+        if (aba === "privada") {
+            document.getElementById("tabPrivada").classList.add("active");
+        } else if (aba === "publica") {
+            document.getElementById("tabPublica").classList.add("active");
+        }
+        gerarResposta();
+    }
 }
 
 function carregarTemplates(lista = templates){
-
-let html="";
-
-lista.forEach(template=>{
-
-html += `
-<div class="template-card">
-<strong>${template.categoria}</strong><br>
-${template.titulo}
-<br><br>
-<button onclick="usarTemplate(${template.id})">
-Usar
-</button>
-</div>
-`;
-
-});
-
-document.getElementById("listaTemplates").innerHTML = html;
-
+    let html = "";
+    lista.forEach(template => {
+        const isRetorno = template.tipo === "retorno";
+        const badgeClass = isRetorno ? "badge-retorno" : "badge-geral";
+        const badgeLabel = isRetorno ? "Retorno" : "Geral / Privada";
+        
+        html += `
+        <div class="template-card">
+            <span class="badge ${badgeClass}">${badgeLabel}</span><br>
+            <strong>${template.categoria}</strong> - ${template.titulo}<br>
+            <small style="color: #666; display:block; margin-top:4px;">${template.problema}</small>
+            <button onclick="usarTemplate(${template.id})">Usar Template</button>
+        </div>
+        `;
+    });
+    document.getElementById("listaTemplates").innerHTML = html;
 }
 
 function usarTemplate(id){
+    const t = templates.find(x => x.id === id);
+    if (!t) return;
 
-const t = templates.find(x => x.id === id);
-
-if(!t) return;
-
-document.getElementById("problema").value = t.problema;
-document.getElementById("orientacao").value = t.orientacao;
-
-mudarAba("privada");
-
-gerarResposta();
-
+    if (t.tipo === "retorno") {
+        document.getElementById("retornoProblema").value = t.problema;
+        document.getElementById("retornoInstrucao").value = t.orientacao;
+        mudarAba("resposta_retorno");
+    } else {
+        document.getElementById("problema").value = t.problema;
+        document.getElementById("orientacao").value = t.orientacao;
+        mudarAba("privada");
+    }
 }
 
 function buscarTemplate(valor){
-
-const filtrados = templates.filter(t =>
-t.titulo.toLowerCase().includes(valor.toLowerCase()) ||
-t.categoria.toLowerCase().includes(valor.toLowerCase())
-);
-
-carregarTemplates(filtrados);
-
+    const filtrados = templates.filter(t =>
+        t.titulo.toLowerCase().includes(valor.toLowerCase()) ||
+        t.categoria.toLowerCase().includes(valor.toLowerCase()) ||
+        t.problema.toLowerCase().includes(valor.toLowerCase())
+    );
+    carregarTemplates(filtrados);
 }
 
 function copiarResposta(){
+    const texto = document.getElementById("preview").innerText
+        .replace(/\n{3,}/g,"\n\n")
+        .replace(/[ \t]+\n/g,"\n")
+        .trim();
 
-const texto = document.getElementById("preview").innerText
-.replace(/\n{3,}/g,"\n\n")
-.replace(/[ \t]+\n/g,"\n")
-.trim();
+    if(!texto) {
+        alert("Nenhum texto para copiar!");
+        return;
+    }
 
-navigator.clipboard.writeText(texto)
-.then(()=>{
-alert("Resposta copiada com sucesso!");
-})
-.catch(err=>{
-alert("Erro ao copiar: " + err);
-});
-
+    navigator.clipboard.writeText(texto)
+        .then(() => { alert("Resposta copiada com sucesso!"); })
+        .catch(err => { alert("Erro ao copiar: " + err); });
 }
 
 function copiarSemAssinatura(){
+    let texto = document.getElementById("preview").innerText;
+    const assinaturaTexto = assinatura().trim();
 
-let texto = document.getElementById("preview").innerText;
+    if(texto.includes(assinaturaTexto)){
+        texto = texto.replace(assinaturaTexto,"");
+    }
 
-const assinaturaTexto = assinatura().trim();
+    texto = texto
+        .replace(/\n{3,}/g,"\n\n")
+        .replace(/[ \t]+\n/g,"\n")
+        .trim();
 
-if(texto.includes(assinaturaTexto)){
-texto = texto.replace(assinaturaTexto,"");
-}
-
-texto = texto
-.replace(/\n{3,}/g,"\n\n")
-.replace(/[ \t]+\n/g,"\n")
-.trim();
-
-navigator.clipboard.writeText(texto)
-.then(()=>{
-alert("Resposta copiada sem assinatura!");
-})
-.catch(err=>{
-alert("Erro ao copiar: " + err);
-});
-
+    navigator.clipboard.writeText(texto)
+        .then(() => { alert("Resposta copiada sem assinatura!"); })
+        .catch(err => { alert("Erro ao copiar: " + err); });
 }
 
 function limparCampos(){
-
-document.getElementById("atendente").value="";
-document.getElementById("cliente").value="";
-document.getElementById("problema").value="";
-document.getElementById("observacao").value="";
-document.getElementById("orientacao").value="";
-
-gerarResposta();
-
+    document.getElementById("atendente").value = "";
+    document.getElementById("cliente").value = "";
+    document.getElementById("problema").value = "";
+    document.getElementById("observacao").value = "";
+    document.getElementById("orientacao").value = "";
+    document.getElementById("retornoProblema").value = "";
+    document.getElementById("retornoInstrucao").value = "";
+    
+    gerarResposta();
+    alert("Todos os campos foram limpos!");
 }
 
-gerarResposta();
-
+// Inicialização inicial segura
+window.onload = function() {
+    gerarResposta();
+};
 </script>
 
 </body>
