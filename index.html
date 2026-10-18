@@ -4,213 +4,350 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard ReclameAQUI | Microsoft</title>
-
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+:root {
+    --bg-color: #f3f2f1;
+    --card-bg: #ffffff;
+    --text-color: #323130;
+    --primary-color: #0078d4;
+    --primary-hover: #106ebe;
+    --purple-color: #5c2d91;
+    --purple-hover: #4b2475;
+    --danger-color: #d13438;
+    --danger-hover: #a8282b;
+    --border-color: #d1d1d1;
+    --preview-bg: #fafafa;
+    --tab-bg: #eaeaea;
+    --tab-text: #323130;
+    --retorno-bg: #fffdf4;
+    --retorno-border: #f2c811;
+    --retorno-text: #8a6d00;
+    --badge-geral-bg: #e1f5fe;
+    --badge-geral-text: #0288d1;
+    --badge-retorno-bg: #fff3e0;
+    --badge-retorno-text: #f57c00;
 }
 
-body{
-    font-family:'Segoe UI',sans-serif;
-    background:#f3f2f1;
-    padding:20px;
-    color:#323130;
+[data-theme="dark"] {
+    --bg-color: #111111;
+    --card-bg: #1b1b1b;
+    --text-color: #f5f5f5;
+    --primary-color: #0086f0;
+    --primary-hover: #339af2;
+    --purple-color: #723db5;
+    --purple-hover: #8553ca;
+    --danger-color: #e84144;
+    --danger-hover: #ef6366;
+    --border-color: #444444;
+    --preview-bg: #242424;
+    --tab-bg: #2d2d2d;
+    --tab-text: #cccccc;
+    --retorno-bg: #2d2919;
+    --retorno-border: #bfa00f;
+    --retorno-text: #f7df72;
+    --badge-geral-bg: #0d3c55;
+    --badge-geral-text: #64b5f6;
+    --badge-retorno-bg: #4a2700;
+    --badge-retorno-text: #ffb74d;
 }
 
-.container{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-    max-width:1400px;
-    margin:auto;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.card{
-    background:#fff;
-    border-radius:12px;
-    padding:20px;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
-}
-
-h2{
-    color:#0078d4;
-    margin-bottom:15px;
-}
-
-label{
-    display:block;
-    margin-top:12px;
-    font-weight:600;
-}
-
-input, textarea{
-    width:100%;
-    padding:10px;
-    margin-top:5px;
-    border:1px solid #d1d1d1;
-    border-radius:6px;
-    font-size:14px;
-}
-
-textarea{
-    min-height:110px;
-    resize:vertical;
-}
-
-/* Campos exclusivos da aba Retorno */
-.retorno-exclusivo-fields {
-    background: #fffdf4;
-    border: 1px dashed #f2c811;
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
     padding: 15px;
-    border-radius: 8px;
-    margin-top: 15px;
+    overflow: hidden;
+    transition: background 0.3s, color 0.3s;
 }
-.retorno-exclusivo-title {
+
+.header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1600px;
+    margin: 0 auto 10px auto;
+    height: 40px;
+}
+
+h2 {
+    color: var(--primary-color);
+    font-size: 20px;
+}
+
+.theme-toggle-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    font-weight: 600;
+    cursor: pointer;
     font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.theme-toggle-btn:hover {
+    border-color: var(--primary-color);
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    max-width: 1600px;
+    margin: auto;
+    height: calc(100vh - 70px);
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.form-scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    transition: all 0.2s;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+textarea {
+    min-height: 80px;
+    resize: none;
+}
+
+#problema, #retornoProblema {
+    min-height: 100px;
+}
+#orientacao, #retornoInstrucao {
+    min-height: 120px;
+}
+
+.retorno-exclusivo-fields {
+    background: var(--retorno-bg);
+    border: 1px dashed var(--retorno-border);
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 12px;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.retorno-exclusivo-title {
+    font-size: 12px;
     text-transform: uppercase;
-    color: #8a6d00;
+    color: var(--retorno-text);
     letter-spacing: 0.5px;
-    margin-bottom: 5px;
     font-weight: bold;
+    margin-bottom: 2px;
 }
 
-.tabs{
-    display:flex;
-    gap:5px;
-    margin-bottom:15px;
+.tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
 }
 
-.tab{
-    flex:1;
-    padding:12px 6px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-    background:#eaeaea;
-    font-weight:600;
+.tab {
+    flex: 1;
+    padding: 10px 4px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: var(--tab-bg);
+    color: var(--tab-text);
+    font-weight: 600;
     font-size: 13px;
     text-align: center;
+    transition: all 0.2s;
 }
 
-.tab.active{
-    background:#0078d4;
-    color:#fff;
+.tab:hover {
+    opacity: 0.9;
 }
 
-.preview{
-    border:1px solid #ddd;
-    border-radius:6px;
-    background:#fafafa;
-    padding:15px;
-    height:550px;
-    overflow:auto;
-    white-space:pre-wrap;
+.tab.active {
+    background: var(--primary-color);
+    color: #fff;
 }
 
-.btn{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-    font-weight:600;
-    margin-top:10px;
+.preview {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--preview-bg);
+    padding: 12px;
+    flex: 1;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    font-size: 14px;
+    line-height: 1.5;
+    transition: background 0.3s, border-color 0.3s;
 }
 
-.btn-primary{
-    background:#0078d4;
-    color:#fff;
+.btn-group {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.btn-purple{
-    background:#5c2d91;
-    color:#fff;
+.btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background 0.2s;
 }
 
-.btn-danger{
-    background:#d13438;
-    color:#fff;
+.btn-primary { background: var(--primary-color); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); }
+
+.btn-purple { background: var(--purple-color); color: #fff; }
+.btn-purple:hover { background: var(--purple-hover); }
+
+.btn-danger { background: var(--danger-color); color: #fff; }
+.btn-danger:hover { background: var(--danger-hover); }
+
+#templateArea {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
 }
 
-.template-card{
-    border:1px solid #ddd;
-    border-radius:8px;
-    padding:12px;
-    margin-bottom:10px;
-    background:#fff;
+.template-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: var(--card-bg);
+    transition: all 0.2s;
 }
 
 .badge {
     display: inline-block;
-    padding: 3px 6px;
-    font-size: 11px;
+    padding: 2px 6px;
+    font-size: 10px;
     border-radius: 4px;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
 }
-.badge-geral { background: #e1f5fe; color: #0288d1; }
-.badge-retorno { background: #fff3e0; color: #f57c00; }
+.badge-geral { background: var(--badge-geral-bg); color: var(--badge-geral-text); }
+.badge-retorno { background: var(--badge-retorno-bg); color: var(--badge-retorno-text); }
 
-.template-card button{
-    margin-top:8px;
-    padding:8px 14px;
-    border:none;
-    border-radius:4px;
-    background:#0078d4;
-    color:#fff;
-    cursor:pointer;
+.template-card strong {
+    font-size: 14px;
 }
 
-#templateArea{
-    display:none;
-    height:550px;
-    overflow:auto;
+.template-card p {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 2px;
 }
+
+.template-card button {
+    margin-top: 8px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background: var(--primary-color);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+}
+.template-card button:hover { background: var(--primary-hover); }
 
 @media(max-width:900px){
-    .container{
-        grid-template-columns:1fr;
-    }
+    body { overflow: auto; height: auto; }
+    .container { grid-template-columns: 1fr; height: auto; }
+    .preview, #templateArea { height: 400px; }
 }
 </style>
 </head>
-
 <body>
+
+<div class="header-bar">
+    <h2>Atendimento Microsoft</h2>
+    <button class="theme-toggle-btn" onclick="toggleTheme()">
+        <span id="theme-icon">🌙</span> <span id="theme-text">Modo Black</span>
+    </button>
+</div>
 
 <div class="container">
 
     <div class="card">
-        <h2>Atendimento Microsoft</h2>
+        <div class="form-scroll-container">
+            <label>Atendente</label>
+            <input id="atendente" oninput="salvarAtendente(); gerarResposta();" placeholder="Seu nome">
 
-        <label>Atendente</label>
-        <input id="atendente" oninput="gerarResposta()">
+            <label>Cliente</label>
+            <input id="cliente" oninput="gerarResposta()" placeholder="Nome do cliente">
 
-        <label>Cliente</label>
-        <input id="cliente" oninput="gerarResposta()">
+            <!-- Campos Padrões para abas Privada/Pública -->
+            <div id="camposPadraoSecao">
+                <label>Problema Informado (Privada/Pública)</label>
+                <textarea id="problema" oninput="gerarResposta()" placeholder="Relato inicial do problema..."></textarea>
 
-        <!-- Campos Padrões para abas Privada/Pública -->
-        <div id="camposPadraoSecao">
-            <label>Problema Informado (Privada/Pública)</label>
-            <textarea id="problema" oninput="gerarResposta()"></textarea>
+                <label>Observação Interna (Privada)</label>
+                <textarea id="observacao" oninput="gerarResposta()" placeholder="Informações de segurança ou notas internas de sistema..."></textarea>
 
-            <label>Observação Interna (Privada)</label>
-            <textarea id="observacao" oninput="gerarResposta()"></textarea>
+                <label>Orientação Passada (Privada/Pública)</label>
+                <textarea id="orientacao" oninput="gerarResposta()" placeholder="Etapas repassadas para o cliente realizar..."></textarea>
+            </div>
 
-            <label>Orientação Passada (Privada/Pública)</label>
-            <textarea id="orientacao" oninput="gerarResposta()"></textarea>
-        </div>
+            <!-- Campos Exclusivos para a Aba Resposta Retorno -->
+            <div id="camposRetornoSecao" class="retorno-exclusivo-fields" style="display: none;">
+                <div class="retorno-exclusivo-title">Exclusivo: Resposta Retorno</div>
+                
+                <label>Dificuldade/Erro relatado pelo cliente no retorno</label>
+                <textarea id="retornoProblema" oninput="gerarResposta()" placeholder="Ex: Cliente informa que o código de erro persiste ao carregar a página..."></textarea>
 
-        <!-- Campos Exclusivos para a Aba Resposta Retorno -->
-        <div id="camposRetornoSecao" class="retorno-exclusivo-fields" style="display: none;">
-            <div class="retorno-exclusivo-title">Exclusivo: Resposta Retorno</div>
-            
-            <label>Dificuldade/Erro relatado pelo cliente no retorno</label>
-            <textarea id="retornoProblema" oninput="gerarResposta()" placeholder="Ex: Cliente informa que o código de erro persiste ao carregar a página..."></textarea>
-
-            <label>Nova Instrução ou Solução direcionada</label>
-            <textarea id="retornoInstrucao" oninput="gerarResposta()" placeholder="Ex: Solicitei a execução em Modo Privado e envio do print completo..."></textarea>
+                <label>Nova Instrução ou Solução direcionada</label>
+                <textarea id="retornoInstrucao" oninput="gerarResposta()" placeholder="Ex: Solicitei a execução em Modo Privado e envio do print completo..."></textarea>
+            </div>
         </div>
     </div>
 
@@ -230,9 +367,11 @@ textarea{
             <div id="listaTemplates"></div>
         </div>
 
-        <button class="btn btn-primary" onclick="copiarResposta()">Copiar Resposta</button>
-        <button class="btn btn-purple" onclick="copiarSemAssinatura()">Copiar Sem Assinatura</button>
-        <button class="btn btn-danger" onclick="limparCampos()">Limpar Campos</button>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="copiarResposta()">Copiar Resposta</button>
+            <button class="btn btn-purple" onclick="copiarSemAssinatura()">Copiar Sem Assinatura</button>
+            <button class="btn btn-danger" onclick="limparCampos()">Limpar Campos</button>
+        </div>
     </div>
 
 </div>
@@ -323,14 +462,12 @@ function gerarResposta(){
     const cliente = document.getElementById("cliente").value.trim() || "[Cliente]";
     const atendente = document.getElementById("atendente").value.trim() || "[Atendente]";
     
-    // Valores padrões
     const problema = document.getElementById("problema").value.trim() || "[Problema]";
     const observacao = document.getElementById("observacao").value.trim();
     const orientacao = document.getElementById("orientacao").value.trim() || "[Orientação]";
     
-    // Valores exclusivos de retorno
-    const retornoProblema = document.getElementById("retornoProblema").value.trim() || "[Relato do Cliente no Retorno]";
-    const retornoInstrucao = document.getElementById("retornoInstrucao").value.trim() || "[Nova Instrução Direcionada]";
+    const retornoProblema = document.getElementById("retornoProblema").value.trim() || "[Dificuldade relatada pelo cliente]";
+    const retornoInstrucao = document.getElementById("retornoInstrucao").value.trim() || "[Nova instrução ou próximo passo]";
 
     let texto = "";
 
@@ -351,8 +488,8 @@ ${observacao}
 ${orientacao}
 
 ${assinatura()}`;
-
-    } else if (abaAtual === "publica") {
+    } 
+    else if (abaAtual === "publica") {
         texto = `Olá ${cliente},
 
 Obrigado pelo contato.
@@ -364,16 +501,16 @@ Esclarecemos que:
 ${orientacao}
 
 ${assinatura()}`;
-
-    } else if (abaAtual === "resposta_retorno") {
+    } 
+    else if (abaAtual === "resposta_retorno") {
         texto = `Olá ${cliente},
 
 Obrigado pelo retorno.
 
-Analisamos suas novas considerações sobre o caso:
+Entendemos o ocorrido em relação ao seguinte cenário trazido:
 ${retornoProblema}
 
-Para darmos continuidade e resolvermos seu impasse, siga esta nova orientação atualizada:
+Para darmos continuidade e resolvermos isso, por favor siga estas novas orientações:
 ${retornoInstrucao}
 
 Permanecemos à inteira disposição.
@@ -387,14 +524,11 @@ ${assinatura()}`;
 function mudarAba(aba){
     abaAtual = aba;
 
-    // Remove active de todas as abas
     document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
-
-    // Esconde visualizadores padrão
     document.getElementById("preview").style.display = "block";
     document.getElementById("templateArea").style.display = "none";
 
-    // Lógica de visibilidade dos inputs (Formulário da Esquerda)
+    // Controle de exibição dos painéis de campos da esquerda
     if (aba === "resposta_retorno") {
         document.getElementById("camposPadraoSecao").style.display = "none";
         document.getElementById("camposRetornoSecao").style.display = "block";
@@ -406,15 +540,10 @@ function mudarAba(aba){
         document.getElementById("templateArea").style.display = "block";
         carregarTemplates();
     } else {
-        // Privada ou Pública usam os mesmos campos padrões
         document.getElementById("camposPadraoSecao").style.display = "block";
         document.getElementById("camposRetornoSecao").style.display = "none";
-        
-        if (aba === "privada") {
-            document.getElementById("tabPrivada").classList.add("active");
-        } else if (aba === "publica") {
-            document.getElementById("tabPublica").classList.add("active");
-        }
+        if (aba === "privada") document.getElementById("tabPrivada").classList.add("active");
+        if (aba === "publica") document.getElementById("tabPublica").classList.add("active");
         gerarResposta();
     }
 }
@@ -424,13 +553,13 @@ function carregarTemplates(lista = templates){
     lista.forEach(template => {
         const isRetorno = template.tipo === "retorno";
         const badgeClass = isRetorno ? "badge-retorno" : "badge-geral";
-        const badgeLabel = isRetorno ? "Retorno" : "Geral / Privada";
-        
+        const badgeLabel = isRetorno ? "Retorno" : "Geral";
+
         html += `
         <div class="template-card">
             <span class="badge ${badgeClass}">${badgeLabel}</span><br>
-            <strong>${template.categoria}</strong> - ${template.titulo}<br>
-            <small style="color: #666; display:block; margin-top:4px;">${template.problema}</small>
+            <strong>${template.categoria} - ${template.titulo}</strong>
+            <p>Preenche de forma automática os campos mapeados.</p>
             <button onclick="usarTemplate(${template.id})">Usar Template</button>
         </div>
         `;
@@ -451,6 +580,7 @@ function usarTemplate(id){
         document.getElementById("orientacao").value = t.orientacao;
         mudarAba("privada");
     }
+    gerarResposta();
 }
 
 function buscarTemplate(valor){
@@ -463,57 +593,80 @@ function buscarTemplate(valor){
 }
 
 function copiarResposta(){
-    const texto = document.getElementById("preview").innerText
-        .replace(/\n{3,}/g,"\n\n")
-        .replace(/[ \t]+\n/g,"\n")
-        .trim();
-
-    if(!texto) {
-        alert("Nenhum texto para copiar!");
-        return;
-    }
-
+    const texto = document.getElementById("preview").innerText.trim();
     navigator.clipboard.writeText(texto)
-        .then(() => { alert("Resposta copiada com sucesso!"); })
-        .catch(err => { alert("Erro ao copiar: " + err); });
+        .then(() => alert("Resposta completa copiada com sucesso!"))
+        .catch(err => alert("Erro ao copiar texto: " + err));
 }
 
 function copiarSemAssinatura(){
     let texto = document.getElementById("preview").innerText;
     const assinaturaTexto = assinatura().trim();
-
-    if(texto.includes(assinaturaTexto)){
-        texto = texto.replace(assinaturaTexto,"");
+    
+    if (texto.includes(assinaturaTexto)) {
+        texto = texto.replace(assinaturaTexto, "");
     }
-
-    texto = texto
-        .replace(/\n{3,}/g,"\n\n")
-        .replace(/[ \t]+\n/g,"\n")
-        .trim();
-
+    
+    texto = texto.trim();
     navigator.clipboard.writeText(texto)
-        .then(() => { alert("Resposta copiada sem assinatura!"); })
-        .catch(err => { alert("Erro ao copiar: " + err); });
+        .then(() => alert("Resposta copiada sem assinatura com sucesso!"))
+        .catch(err => alert("Erro ao copiar texto: " + err));
 }
 
 function limparCampos(){
-    document.getElementById("atendente").value = "";
     document.getElementById("cliente").value = "";
     document.getElementById("problema").value = "";
     document.getElementById("observacao").value = "";
     document.getElementById("orientacao").value = "";
     document.getElementById("retornoProblema").value = "";
     document.getElementById("retornoInstrucao").value = "";
-    
     gerarResposta();
-    alert("Todos os campos foram limpos!");
 }
 
-// Inicialização inicial segura
-window.onload = function() {
-    gerarResposta();
-};
-</script>
+// Funções de Persistência Local (LocalStorage)
+function salvarAtendente(){
+    const atendente = document.getElementById("atendente").value;
+    localStorage.setItem("ra_atendente", atendente);
+}
 
+function carregarPreferencias(){
+    // Carrega Atendente
+    const salvoAtendente = localStorage.getItem("ra_atendente");
+    if (salvoAtendente) {
+        document.getElementById("atendente").value = salvoAtendente;
+    }
+    
+    // Carrega Tema
+    const salvoTema = localStorage.getItem("ra_theme");
+    if (salvoTema === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        document.getElementById("theme-icon").innerText = "☀️";
+        document.getElementById("theme-text").innerText = "Modo Claro";
+    }
+}
+
+function toggleTheme(){
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    if (currentTheme === "dark") {
+        document.documentElement.removeAttribute("data-theme");
+        document.getElementById("theme-icon").innerText = "🌙";
+        document.getElementById("theme-text").innerText = "Modo Black";
+        localStorage.setItem("ra_theme", "light");
+    } else {
+        document.documentElement.setAttribute("data-theme", "dark");
+        document.getElementById("theme-icon").innerText = "☀️";
+        document.getElementById("theme-text").innerText = "Modo Claro";
+        localStorage.setItem("ra_theme", "dark");
+    }
+}
+
+// Inicialização segura
+document.addEventListener("DOMContentLoaded", () => {
+    carregarPreferencias();
+    gerarResposta();
+});
+carregarPreferencias();
+gerarResposta();
+</script>
 </body>
 </html>
