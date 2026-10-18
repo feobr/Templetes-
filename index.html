@@ -45,8 +45,7 @@ label{
     font-weight:600;
 }
 
-input,
-textarea{
+input, textarea{
     width:100%;
     padding:10px;
     margin-top:5px;
@@ -78,7 +77,7 @@ textarea{
 
 .tab.active{
     background:#0078d4;
-    color:white;
+    color:#fff;
 }
 
 .preview{
@@ -103,12 +102,17 @@ textarea{
 
 .btn-primary{
     background:#0078d4;
-    color:white;
+    color:#fff;
+}
+
+.btn-purple{
+    background:#5c2d91;
+    color:#fff;
 }
 
 .btn-danger{
     background:#d13438;
-    color:white;
+    color:#fff;
 }
 
 .template-card{
@@ -116,18 +120,17 @@ textarea{
     border-radius:8px;
     padding:12px;
     margin-bottom:10px;
-    background:white;
+    background:#fff;
 }
 
 .template-card button{
     margin-top:8px;
-    margin-right:5px;
-    padding:8px 12px;
+    padding:8px 14px;
     border:none;
     border-radius:4px;
-    cursor:pointer;
     background:#0078d4;
-    color:white;
+    color:#fff;
+    cursor:pointer;
 }
 
 #templateArea{
@@ -148,64 +151,70 @@ textarea{
 
 <div class="container">
 
-    <div class="card">
-        <h2>Atendimento Microsoft</h2>
+<div class="card">
 
-        <label>Atendente</label>
-        <input id="atendente" oninput="gerarResposta()">
+<h2>Atendimento Microsoft</h2>
 
-        <label>Cliente</label>
-        <input id="cliente" oninput="gerarResposta()">
+<label>Atendente</label>
+<input id="atendente" oninput="gerarResposta()">
 
-        <label>Problema</label>
-        <textarea id="problema" oninput="gerarResposta()"></textarea>
+<label>Cliente</label>
+<input id="cliente" oninput="gerarResposta()">
 
-        <label>Observação Interna</label>
-        <textarea id="observacao" oninput="gerarResposta()"></textarea>
+<label>Problema</label>
+<textarea id="problema" oninput="gerarResposta()"></textarea>
 
-        <label>Orientação</label>
-        <textarea id="orientacao" oninput="gerarResposta()"></textarea>
-    </div>
+<label>Observação Interna</label>
+<textarea id="observacao" oninput="gerarResposta()"></textarea>
 
-    <div class="card">
+<label>Orientação</label>
+<textarea id="orientacao" oninput="gerarResposta()"></textarea>
 
-        <div class="tabs">
-            <button class="tab active" id="tabPrivada" onclick="mudarAba('privada')">
-                Privada
-            </button>
+</div>
 
-            <button class="tab" id="tabPublica" onclick="mudarAba('publica')">
-                Pública
-            </button>
+<div class="card">
 
-            <button class="tab" id="tabTemplates" onclick="mudarAba('templates')">
-                Templates
-            </button>
-        </div>
+<div class="tabs">
+<button class="tab active" id="tabPrivada" onclick="mudarAba('privada')">
+Privada
+</button>
 
-        <div id="preview" class="preview"></div>
+<button class="tab" id="tabPublica" onclick="mudarAba('publica')">
+Pública
+</button>
 
-        <div id="templateArea">
+<button class="tab" id="tabTemplates" onclick="mudarAba('templates')">
+Templates
+</button>
+</div>
 
-            <input
-                placeholder="Pesquisar template..."
-                onkeyup="buscarTemplate(this.value)">
+<div id="preview" class="preview"></div>
 
-            <br><br>
+<div id="templateArea">
 
-            <div id="listaTemplates"></div>
+<input
+placeholder="Pesquisar template..."
+onkeyup="buscarTemplate(this.value)">
 
-        </div>
+<br><br>
 
-        <button class="btn btn-primary" onclick="copiarResposta()">
-            Copiar Resposta
-        </button>
+<div id="listaTemplates"></div>
 
-        <button class="btn btn-danger" onclick="limparCampos()">
-            Limpar Campos
-        </button>
+</div>
 
-    </div>
+<button class="btn btn-primary" onclick="copiarResposta()">
+Copiar Resposta
+</button>
+
+<button class="btn btn-purple" onclick="copiarSemAssinatura()">
+Copiar Sem Assinatura
+</button>
+
+<button class="btn btn-danger" onclick="limparCampos()">
+Limpar Campos
+</button>
+
+</div>
 
 </div>
 
@@ -214,37 +223,51 @@ textarea{
 let abaAtual = "privada";
 
 const templates = [
-    {
-        id:1,
-        categoria:"Conta Microsoft",
-        titulo:"Conta Bloqueada",
-        problema:"Conta Microsoft bloqueada",
-        orientacao:"Realizar recuperação através do formulário oficial Microsoft."
-    },
-    {
-        id:2,
-        categoria:"Xbox",
-        titulo:"Game Pass",
-        problema:"Problema com assinatura Game Pass",
-        orientacao:"Validar pagamento, assinatura ativa e conta utilizada."
-    },
-    {
-        id:3,
-        categoria:"Windows",
-        titulo:"Ativação",
-        problema:"Erro de ativação do Windows",
-        orientacao:"Executar solucionador de ativação e validar licença."
-    }
+
+{
+id:1,
+categoria:"Conta Microsoft",
+titulo:"Conta Bloqueada",
+problema:"Conta Microsoft bloqueada",
+orientacao:"Realizar recuperação através do formulário oficial Microsoft."
+},
+
+{
+id:2,
+categoria:"Xbox",
+titulo:"Game Pass",
+problema:"Problema com assinatura Game Pass",
+orientacao:"Validar pagamento, assinatura ativa e conta utilizada."
+},
+
+{
+id:3,
+categoria:"Windows",
+titulo:"Ativação",
+problema:"Erro de ativação do Windows",
+orientacao:"Executar solucionador de ativação e validar licença."
+},
+
+{
+id:4,
+categoria:"Conta Microsoft",
+titulo:"Conta hackeada",
+problema:"Conta hackeada",
+orientacao:"acessar aka.ms/reupera."
+}
+
 ];
 
 function assinatura(){
 
-    const atendente =
-    document.getElementById("atendente").value.trim()
-    || "[Atendente]";
+const atendente =
+document.getElementById("atendente").value.trim()
+|| "[Atendente]";
 
-    return `
+return `
+
 Atenciosamente,
+
 ${atendente}
 Equipe ReclameAQUI/Microsoft
 
@@ -266,32 +289,32 @@ Instagram:
 Microsoftbr
 
 X:
-@MicrosoftAjuda
-`;
+@MicrosoftAjuda`;
+
 }
 
 function gerarResposta(){
 
-    const cliente =
-    document.getElementById("cliente").value || "[Cliente]";
+const cliente =
+document.getElementById("cliente").value || "[Cliente]";
 
-    const atendente =
-    document.getElementById("atendente").value || "[Atendente]";
+const atendente =
+document.getElementById("atendente").value || "[Atendente]";
 
-    const problema =
-    document.getElementById("problema").value || "[Problema]";
+const problema =
+document.getElementById("problema").value || "[Problema]";
 
-    const observacao =
-    document.getElementById("observacao").value;
+const observacao =
+document.getElementById("observacao").value;
 
-    const orientacao =
-    document.getElementById("orientacao").value || "[Orientação]";
+const orientacao =
+document.getElementById("orientacao").value || "[Orientação]";
 
-    let texto = "";
+let texto = "";
 
-    if(abaAtual === "privada"){
+if(abaAtual === "privada"){
 
-        texto = `Olá ${cliente},
+texto = `Olá ${cliente},
 
 Obrigado por contatar a Microsoft.
 
@@ -301,17 +324,20 @@ Problema informado:
 
 ${problema}
 
-${observacao ? "Observação Interna:\n" + observacao + "\n" : ""}
+${observacao ? `Observação Interna:
 
-Orientação:
+${observacao}
+
+` : ""}Orientação:
 
 ${orientacao}
 
 ${assinatura()}`;
 
-    } else {
+}
+else{
 
-        texto = `Olá ${cliente},
+texto = `Olá ${cliente},
 
 Obrigado pelo contato.
 
@@ -325,113 +351,144 @@ ${orientacao}
 
 ${assinatura()}`;
 
-    }
+}
 
-    document.getElementById("preview").innerText = texto;
+document.getElementById("preview").innerText = texto;
+
 }
 
 function mudarAba(aba){
 
-    abaAtual = aba;
+abaAtual = aba;
 
-    document
-        .querySelectorAll(".tab")
-        .forEach(btn => btn.classList.remove("active"));
+document.querySelectorAll(".tab")
+.forEach(btn => btn.classList.remove("active"));
 
-    document.getElementById("preview").style.display = "block";
-    document.getElementById("templateArea").style.display = "none";
+document.getElementById("preview").style.display = "block";
+document.getElementById("templateArea").style.display = "none";
 
-    if(aba === "privada"){
-        document.getElementById("tabPrivada").classList.add("active");
-        gerarResposta();
-        return;
-    }
+if(aba==="privada"){
+document.getElementById("tabPrivada").classList.add("active");
+gerarResposta();
+return;
+}
 
-    if(aba === "publica"){
-        document.getElementById("tabPublica").classList.add("active");
-        gerarResposta();
-        return;
-    }
+if(aba==="publica"){
+document.getElementById("tabPublica").classList.add("active");
+gerarResposta();
+return;
+}
 
-    document.getElementById("tabTemplates").classList.add("active");
-    document.getElementById("preview").style.display = "none";
-    document.getElementById("templateArea").style.display = "block";
+document.getElementById("tabTemplates").classList.add("active");
 
-    carregarTemplates();
+document.getElementById("preview").style.display = "none";
+document.getElementById("templateArea").style.display = "block";
+
+carregarTemplates();
+
 }
 
 function carregarTemplates(lista = templates){
 
-    let html = "";
+let html="";
 
-    lista.forEach(template => {
+lista.forEach(template=>{
 
-        html += `
-        <div class="template-card">
+html += `
+<div class="template-card">
+<strong>${template.categoria}</strong><br>
+${template.titulo}
+<br><br>
+<button onclick="usarTemplate(${template.id})">
+Usar
+</button>
+</div>
+`;
 
-            <strong>${template.categoria}</strong><br>
+});
 
-            ${template.titulo}
+document.getElementById("listaTemplates").innerHTML = html;
 
-            <br><br>
-
-            <button onclick="usarTemplate(${template.id})">
-                Usar
-            </button>
-
-        </div>
-        `;
-    });
-
-    document.getElementById("listaTemplates").innerHTML = html;
 }
 
 function usarTemplate(id){
 
-    const t = templates.find(x => x.id === id);
+const t = templates.find(x => x.id === id);
 
-    if(!t) return;
+if(!t) return;
 
-    document.getElementById("problema").value = t.problema;
-    document.getElementById("orientacao").value = t.orientacao;
+document.getElementById("problema").value = t.problema;
+document.getElementById("orientacao").value = t.orientacao;
 
-    mudarAba("privada");
-    gerarResposta();
+mudarAba("privada");
+
+gerarResposta();
+
 }
 
 function buscarTemplate(valor){
 
-    const filtrados = templates.filter(t =>
-        t.titulo.toLowerCase().includes(valor.toLowerCase()) ||
-        t.categoria.toLowerCase().includes(valor.toLowerCase())
-    );
+const filtrados = templates.filter(t =>
+t.titulo.toLowerCase().includes(valor.toLowerCase()) ||
+t.categoria.toLowerCase().includes(valor.toLowerCase())
+);
 
-    carregarTemplates(filtrados);
+carregarTemplates(filtrados);
+
 }
 
 function copiarResposta(){
 
-    const texto =
-    document.getElementById("preview").innerText;
+const texto = document.getElementById("preview").innerText
+.replace(/\n{3,}/g,"\n\n")
+.replace(/[ \t]+\n/g,"\n")
+.trim();
 
-    navigator.clipboard.writeText(texto)
-        .then(() => {
-            alert("Resposta copiada com sucesso!");
-        })
-        .catch(err => {
-            alert("Erro ao copiar: " + err);
-        });
+navigator.clipboard.writeText(texto)
+.then(()=>{
+alert("Resposta copiada com sucesso!");
+})
+.catch(err=>{
+alert("Erro ao copiar: " + err);
+});
+
+}
+
+function copiarSemAssinatura(){
+
+let texto = document.getElementById("preview").innerText;
+
+const assinaturaTexto = assinatura().trim();
+
+if(texto.includes(assinaturaTexto)){
+texto = texto.replace(assinaturaTexto,"");
+}
+
+texto = texto
+.replace(/\n{3,}/g,"\n\n")
+.replace(/[ \t]+\n/g,"\n")
+.trim();
+
+navigator.clipboard.writeText(texto)
+.then(()=>{
+alert("Resposta copiada sem assinatura!");
+})
+.catch(err=>{
+alert("Erro ao copiar: " + err);
+});
+
 }
 
 function limparCampos(){
 
-    document.getElementById("atendente").value = "";
-    document.getElementById("cliente").value = "";
-    document.getElementById("problema").value = "";
-    document.getElementById("observacao").value = "";
-    document.getElementById("orientacao").value = "";
+document.getElementById("atendente").value="";
+document.getElementById("cliente").value="";
+document.getElementById("problema").value="";
+document.getElementById("observacao").value="";
+document.getElementById("orientacao").value="";
 
-    gerarResposta();
+gerarResposta();
+
 }
 
 gerarResposta();
